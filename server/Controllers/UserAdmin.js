@@ -1,4 +1,5 @@
-import UserModel from "../Schemas/UserSchema.js";
+
+import UserModel from "../Schemas/UserAdminSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -37,6 +38,7 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+
   try {
     const { email, password } = req.body;
     const checkEmail = await UserModel.findOne({ email });
@@ -53,8 +55,12 @@ export const login = async (req, res) => {
         status: false,
       });
     }
+
+    if(checkEmail.isActive===false){
+      return res.json({message:'Your Account is Blocked!!',status:false})
+    }
     const jwtToken = jwt.sign(
-      { id: checkEmail._id, email: checkEmail.email},
+      { id: checkEmail._id, email: checkEmail.email,role:checkEmail.role},
       process.env.SECRET_KEY,
       { expiresIn: "1h" }
     );
@@ -63,6 +69,7 @@ export const login = async (req, res) => {
       status: true,
       jwtToken,
       name: checkEmail.name,
+      role:checkEmail.role
     });
   } catch (error) {
     return res.json({ message: error.message });
@@ -86,6 +93,57 @@ export const update=async(req,res)=>{
     }
     const user=await UserModel.findByIdAndUpdate(id,req.body,{new:true});
     return res.json({message:'User Updated!!',status:true,user:user})
+  } catch (error) {
+    return res.json({message:error.message,status:false})
+  }
+}
+
+export const getAllUsers=async(req,res)=>{
+  try {
+    const allUsers=await UserModel.find({});
+    if(allUsers.length===0){
+      return res.json({message:"No User Found!!",status:false})
+    }
+    return res.json({message:"All Users Found!!",status:true,allUsers:allUsers})
+  } catch (error) {
+    return res.json({message:error.message,status:false})
+  }
+}
+
+export const viewUser=async(req,res)=>{
+  try {
+    const id=req.params.userId;
+    if(!id){
+      return res.json({message:'Id not found',status:false})
+    }
+    const user=await UserModel.findById(id)
+    return res.json({message:'User:',user:user,status:true})
+  } catch (error) {
+    return res.json({message:error.message,status:false})
+  }
+}
+
+export const blockUser=async(req,res)=>{
+  try {
+    const id=req.params.userId;
+    if(!id){
+      return res.json({message:'Id not found!!',status:false})
+    }
+    const changedUser=await UserModel.findByIdAndUpdate(id,{isActive:false},{new:true});
+    return res.json({message:'User Blocked !!',status:true,user:changedUser})
+  } catch (error) {
+    return res.json({message:error.message,status:false})
+  }
+}
+
+export const unblockUser=async(req,res)=>{
+  try {
+    const id=req.params.userId;
+    if(!id){
+      return res.json({message:'Id not found!!',status:false})
+    }
+    const changedUser=await UserModel.findByIdAndUpdate(id,{isActive:true},{new:true});
+    return res.json({message:'User UnBlocked !!',status:true,user:changedUser})
   } catch (error) {
     return res.json({message:error.message,status:false})
   }

@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const RestaurantSchema=new mongoose.Schema({
     name:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     desc:{
         type:String,
@@ -35,9 +36,6 @@ const RestaurantSchema=new mongoose.Schema({
     deliveryTime:{
         type:Number,
         required:true
-    },
-    rating:{
-        type:Number
     },
     isApproved:{
        type:Boolean,
