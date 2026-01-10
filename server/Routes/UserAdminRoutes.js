@@ -16,3 +16,4 @@ routes.get('/admin/users/:userId',Auth,isAdmin,viewUser); //view single user
 routes.patch('/admin/users/:userId/block',Auth,isAdmin,blockUser);//block user
 routes.patch('/admin/users/:userId/unblock',Auth,isAdmin,unblockUser);//unblock user
 export default routes;
+
