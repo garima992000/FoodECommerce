@@ -1,0 +1,137 @@
+.food-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 18px;
+
+  box-shadow: 0 2px 10px rgba(28, 28, 28, 0.08);
+  transition: all 0.25s ease;
+}
+
+.food-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(28, 28, 28, 0.12);
+}
+
+/* Disabled */
+.food-card.disabled {
+  opacity: 0.55;
+}
+
+/* Header */
+.food-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.food-name {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1c1c1c;
+  margin: 0;
+}
+
+/* Veg / Non-veg pill */
+.food-type {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.food-type.veg {
+  background-color: #e6f7ee;
+  color: #067647;
+}
+
+.food-type.non-veg {
+  background-color: #fdecec;
+  color: #b42318;
+}
+
+/* Description */
+.food-desc {
+  font-size: 14px;
+  color: #696969;
+  margin: 8px 0 12px;
+  line-height: 1.4;
+}
+
+/* Footer */
+.food-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.food-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1c1c1c;
+}
+
+/* Add button */
+.add-btn {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  background-color: #e23744;
+  color: #ffffff;
+
+  transition: all 0.25s ease;
+}
+
+.add-btn:hover {
+  background-color: #d32f2f;
+}
+
+.add-btn:disabled {
+  background-color: #e0e0e0;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.menu-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fafafa;
+}
+
+/* Centered content */
+.menu-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* Grid for food cards */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Loading / empty / error states */
+.menu-status {
+  font-size: 15px;
+  color: #696969;
+}
+
+.menu-empty {
+  font-size: 16px;
+  color: #828282;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.menu-error {
+  font-size: 15px;
+  color: #e23744;
+  text-align: center;
+  margin-top: 40px;
+}

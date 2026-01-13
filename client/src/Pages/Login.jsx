@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../Redux/Slices/AuthSlice";
 import { useNavigate } from "react-router-dom";
-
+import '../CSS/Login.css'
 const Login = () => {
   const dispatch=useDispatch();
   const navigate=useNavigate();
@@ -39,6 +39,7 @@ const Login = () => {
     }
   },[isAuthenticated, role, navigate])
   return (
+    <div className="login-page">
     <div className="login-container">
       <h2>Login</h2>
 
@@ -61,6 +62,7 @@ const Login = () => {
       <p>
         Don’t have an account? <span>Register</span>
       </p>
+    </div>
     </div>
   );
 };

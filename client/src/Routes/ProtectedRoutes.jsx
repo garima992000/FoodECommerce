@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const ProtectedRoutes = ({allowedRoles,children}) => {
   const { isAuthenticated, role } = useSelector((state) => state.auth);

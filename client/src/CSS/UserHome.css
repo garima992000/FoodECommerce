@@ -1,0 +1,43 @@
+.user-home {
+  width: 100%;
+  min-height: 100vh;
+
+  background: linear-gradient(
+    135deg,
+    #fff5f5,
+    #fff0f6,
+    #f8f9ff
+  );
+}
+
+/* Title */
+.page-title {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  background: linear-gradient(90deg, #e23744, #ff7a18);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Grid */
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+/* States */
+.status-text {
+  color: #696969;
+}
+
+.error-text {
+  color: #e23744;
+}
+
+.user-home-inner {
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 40px 64px;
+}

@@ -5,7 +5,7 @@ export const loginUser = createAsyncThunk(
   async (loginData, { rejectWithValue }) => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/food/auth/login",
+        "http://localhost:7000/food/auth/login",
         loginData
       );
       return res.data;

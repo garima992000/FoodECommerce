@@ -1,0 +1,93 @@
+.restaurant-card {
+  position: relative;
+  border-radius: 20px;
+  padding: 18px;
+  cursor: pointer;
+  color: #fff;
+
+  background: linear-gradient(
+    135deg,
+    #ff6a88,
+    #ff8c42,
+    #ff4d6d
+  );
+
+  box-shadow: 0 15px 35px rgba(255, 77, 109, 0.35);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.restaurant-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.05)
+  );
+  z-index: 0;
+}
+
+.restaurant-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(255, 77, 109, 0.55);
+}
+
+/* Header */
+.restaurant-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.restaurant-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Status pill */
+.restaurant-status {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.restaurant-status.open {
+  background: linear-gradient(90deg, #00c853, #b2ff59);
+  color: #0f5132;
+}
+
+.restaurant-status.closed {
+  background: linear-gradient(90deg, #ff1744, #ff8a80);
+  color: #fff;
+}
+
+/* Cuisine */
+.restaurant-cuisine {
+  margin: 10px 0 14px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffeaea;
+}
+
+/* Info */
+.restaurant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.restaurant-info span:first-child {
+  font-weight: 600;
+}
