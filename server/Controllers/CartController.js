@@ -94,29 +94,56 @@ export const getCart=async(req,res)=>{
     }
 }
 
-export const updateCart=async(req,res)=>{
-    try {
-      const userId=req.userId;
-      const foodId=req.params.foodId;
-      const {quantity}=req.body;
-      const cart=await CartModel.findOne({userId});
-      if(!cart){
-        return res.json({message:'Cart does not exists!!',status:false})
-      }
-      
-      const itemIndex=cart.items.findIndex(item=>item.foodId.toString()===foodId);
-      if(itemIndex===-1){
-        return res.json({message:'Food Item is not in cart!!',status:false})
-      }
-      cart.items[itemIndex].quantity=quantity;
+export const updateCart = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const foodId = req.params.foodId;
+    const { quantity } = req.body; // +1 or -1
 
-      cart.totalAmount=cart.items.reduce((total,item)=>total+item.price*item.quantity,0);
-      await cart.save();
-      return res.json({message:'Cart is Updated Now!!',status:true,cart:cart})
-    } catch (error) {
-       return res.json({message:error.message,status:false}) 
+    const cart = await CartModel.findOne({ userId });
+    if (!cart) {
+      return res.json({ message: "Cart does not exist!!", status: false });
     }
-}
+
+    const itemIndex = cart.items.findIndex(
+      (item) => item.foodId.toString() === foodId
+    );
+
+    if (itemIndex === -1) {
+      return res.json({
+        message: "Food item is not in cart!!",
+        status: false,
+      });
+    }
+
+    const newQuantity =
+      cart.items[itemIndex].quantity + quantity;
+
+    if (newQuantity <= 0) {
+      cart.items.splice(itemIndex, 1);
+    } else {
+      cart.items[itemIndex].quantity = newQuantity;
+    }
+
+    cart.totalAmount = cart.items.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+
+    await cart.save();
+
+    return res.json({
+      message: "Cart updated successfully",
+      status: true,
+      items: cart.items,
+      totalAmount: cart.totalAmount,
+      restaurantId: cart.restaurantId,
+    });
+  } catch (error) {
+    return res.json({ message: error.message, status: false });
+  }
+};
+
 
 export const deleteItem=async(req,res)=>{
     try {
