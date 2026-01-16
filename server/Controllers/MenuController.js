@@ -171,7 +171,7 @@ export const deleteFood = async (req, res) => {
       });
     }
     await MenuModel.findByIdAndDelete({ _id: foodId });
-    return res.json({ message: "Food Item Deleted!!", status: true });
+    return res.json({ message: "Food Item Deleted!!", status: true ,deletedFoodId: foodId});
   } catch (error) {
     return res.json({ message: error.message, status: false });
   }

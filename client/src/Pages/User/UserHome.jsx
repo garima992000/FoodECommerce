@@ -26,6 +26,7 @@ const UserHome = () => {
             <RestaurantCard
               key={restaurant._id}
               restaurant={restaurant}
+              mode="user"
             />
           ))
         ) : (

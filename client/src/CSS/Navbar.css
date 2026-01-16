@@ -3,6 +3,7 @@
   padding: 0 32px;
    width: 100vw;      
   margin-left: calc(50% - 50vw); 
+  margin-top: -35px;
   display: flex;
   align-items: center;
   justify-content: space-between;

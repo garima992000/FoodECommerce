@@ -1,14 +1,26 @@
 import React from "react";
 import "../CSS/RestaurantCard.css";
 import { useNavigate } from "react-router-dom";
-const RestaurantCard = ({ restaurant }) => {
-    const navigate=useNavigate();
+const RestaurantCard = ({ restaurant ,mode}) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (mode === "user") {
+      navigate(`/restaurants/${restaurant._id}/menu`);
+    }
+
+    if (mode === "restaurant_owner") {
+      navigate(`/restaurants/${restaurant._id}/foods`);
+    }
+
+    if (mode === "admin") {
+      navigate("/admin/restaurants");
+    }
+  };
   return (
     <div
       className="restaurant-card"
       onClick={() => {
-        navigate(`/restaurants/${restaurant._id}/menu`)
-        console.log(`restaurant card clicked!! with id ${restaurant._id}`);
+        handleClick();
       }}
     >
       <div className="restaurant-card-header">

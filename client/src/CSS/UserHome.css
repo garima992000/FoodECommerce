@@ -1,7 +1,6 @@
 .user-home {
   width: 100%;
   min-height: 100vh;
-
   background: linear-gradient(
     135deg,
     #fff5f5,
@@ -9,6 +8,7 @@
     #f8f9ff
   );
 }
+
 
 /* Title */
 .page-title {
@@ -37,7 +37,7 @@
 }
 
 .user-home-inner {
-  max-width: 2000px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
   padding: 40px 64px;
 }

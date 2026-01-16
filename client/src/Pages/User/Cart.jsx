@@ -10,6 +10,8 @@ import "../../CSS/Cart.css";
 import { placeOrder } from "../../Redux/Slices/OrderSlice";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import axiosInstance from "../../Utils/axiosInstance";
 
 const Cart = () => {
   const navigate=useNavigate();
@@ -25,15 +27,24 @@ const Cart = () => {
     dispatch(getCart());
   }, [dispatch]);
   
+  // const handlePlace=async()=>{
+  //   const res=await dispatch(placeOrder());
+  //   const{status,message}=res.payload;
+  //   console.log('PlaceOrder',status,message);
+  //   if(status===true){
+  //     toast.success(message);
+  //     setTimeout(()=>{
+  //       navigate('/myorders')
+  //     },500)
+  //   }
+  // }
+
   const handlePlace=async()=>{
-    const res=await dispatch(placeOrder());
-    const{status,message}=res.payload;
-    console.log('PlaceOrder',status,message);
-    if(status===true){
-      toast.success(message);
-      setTimeout(()=>{
-        navigate('/myorders')
-      },500)
+    try {
+      const {data}=await axiosInstance.post('/create-checkout-session');
+      window.location.href=data.url;
+    } catch (error) {
+      console.log(error)
     }
   }
   return (

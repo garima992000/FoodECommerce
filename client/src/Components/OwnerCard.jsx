@@ -1,5 +1,7 @@
 import React from "react";
 import "../CSS/OrderCard.css";
+import { fetchOwnerOrders, updateOrderStatus } from "../Redux/Slices/OrderSlice";
+import { useDispatch } from "react-redux";
 
 const NEXT_STATUS_MAP = {
   PLACED: ["CONFIRMED", "CANCELLED"],
@@ -10,6 +12,12 @@ const NEXT_STATUS_MAP = {
   CANCELLED: [],
 };
 const OwnerCard = ({ order }) => {
+  const dispatch=useDispatch();
+
+  const handleUpdate=async(id,status)=>{
+    await dispatch(updateOrderStatus(id,status));
+    await dispatch(fetchOwnerOrders());
+  }
   const nextStatuses = NEXT_STATUS_MAP[order.orderStatus] || [];
   return (
     <div className="order-card owner-order-card">
@@ -56,7 +64,7 @@ const OwnerCard = ({ order }) => {
               defaultValue=""
               onChange={(e) => {
                 const newStatus = e.target.value;
-                console.log("Change status to:", newStatus);
+                handleUpdate({orderId:order._id,newStatus})
               }}
             >
               <option value="" disabled>

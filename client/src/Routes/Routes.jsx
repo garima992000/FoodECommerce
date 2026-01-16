@@ -13,6 +13,7 @@ import Cart from "../Pages/User/Cart"
 import MyRestaurants from "../Pages/Owner/MyRestaurants";
 import OwnerOrders from "../Pages/Owner/OwnerOrders"
 import RestaurantMenu from "../Pages/RestaurantMenu";
+import OwnerMenu from "../Pages/OwnerMenu";
 const Routes = createBrowserRouter([
   {
     path: "/login",
@@ -67,6 +68,9 @@ const Routes = createBrowserRouter([
       {
         path:'restaurants/:restaurantId/menu',
         element:<RestaurantMenu/>
+      },{
+        path:'restaurants/:restaurantId/foods',
+        element:<OwnerMenu/>
       }
     ],
   },

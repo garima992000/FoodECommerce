@@ -118,6 +118,10 @@ const OrderSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.success = false;
+      const updatedOrder=action.payload.orders;
+      state.orders.map((order)=>(
+        order._id===updatedOrder._id?updatedOrder:order
+      ))
     });
   },
 });

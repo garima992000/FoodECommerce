@@ -13,6 +13,19 @@ export const fetchRestaurants = createAsyncThunk(
   }
 );
 
+export const fetchOwnerRestaurants=createAsyncThunk(
+  "restaurant/fetOwnerRestaurants",
+  async(_,{rejectWithValue})=>{
+    try {
+      const res=await axiosInstance.get('/restaurants/my');
+      return res.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || error.message);
+
+    }
+  }
+)
+
 const initialState = {
   restaurants: [],
   loading: false,
@@ -31,6 +44,18 @@ const RestaurantSlice = createSlice({
       state.restaurants = action.payload.allRestaurants;
     });
     builder.addCase(fetchRestaurants.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
+    builder.addCase(fetchOwnerRestaurants.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchOwnerRestaurants.fulfilled, (state, action) => {
+      state.loading = false;
+      state.restaurants = action.payload.restaurant;
+    });
+    builder.addCase(fetchOwnerRestaurants.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });
