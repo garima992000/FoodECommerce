@@ -27,7 +27,7 @@ const MyRestaurants = () => {
             <RestaurantCard
               key={restaurant._id}
               restaurant={restaurant}
-              mode="owner"
+              mode="restaurant_owner"
             />
           ))
         ) : (

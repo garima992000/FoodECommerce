@@ -12,9 +12,9 @@ const RestaurantCard = ({ restaurant ,mode}) => {
       navigate(`/restaurants/${restaurant._id}/foods`);
     }
 
-    if (mode === "admin") {
-      navigate("/admin/restaurants");
-    }
+    // if (mode === "admin") {
+    //   navigate("/admin/restaurants");
+    // }
   };
   return (
     <div

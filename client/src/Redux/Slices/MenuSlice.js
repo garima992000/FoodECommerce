@@ -79,7 +79,7 @@ const MenuSlice = createSlice({
       state.error = null;
     });
     builder.addCase(fetchMenu.fulfilled, (state, action) => {
-      state.menuItems = action.payload.menuItems;
+      state.menuItems = action.payload?.menuItems||[];
       state.loading = false;
     });
     builder.addCase(fetchMenu.rejected, (state, action) => {
@@ -91,7 +91,7 @@ const MenuSlice = createSlice({
       state.error = null;
     });
     builder.addCase(fetchOwnerMenu.fulfilled, (state, action) => {
-      state.menuItems = action.payload.foodItems;
+      state.menuItems = action.payload?.foodItems||[];
       state.loading = false;
     });
     builder.addCase(fetchOwnerMenu.rejected, (state, action) => {
