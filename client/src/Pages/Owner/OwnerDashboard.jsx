@@ -10,7 +10,7 @@ const OwnerDashboard = () => {
 
   const { orders = [] } = useSelector((state) => state.order);
   const { restaurants = [] } = useSelector((state) => state.restaurant);
-
+  
   useEffect(() => {
     dispatch(fetchOwnerOrders());
     dispatch(fetchOwnerRestaurants());

@@ -107,11 +107,12 @@ export const getallRestaurantsAdmin = async (req, res) => {
 
 export const PendingRestaurants = async (req, res) => {
   try {
-    const restaurants = await RestaurantModel.find({ isApproved: false });
+    const restaurants = await RestaurantModel.find({ isApproved: false , isOpen:true});
     if (restaurants.length===0) {
       return res.json({
         message: "No Pending Restaurants there!!",
-        status: false,
+        status: true,
+        pendingRestaurants: restaurants
       });
     }
     return res.json({
@@ -132,7 +133,7 @@ export const ApproveRestaurants = async (req, res) => {
     }
     const approvedRestaurant = await RestaurantModel.findByIdAndUpdate(
       id,
-      { isApproved: true },
+      { isApproved: true ,isOpen:true},
       { new: true }
     );
     return res.json({
@@ -153,7 +154,7 @@ export const BlockRestaurants = async (req, res) => {
     }
     const blockedRestaurant = await RestaurantModel.findByIdAndUpdate(
       id,
-      { isApproved: false, isOpen: false },
+      {isOpen: false },
       { new: true }
     );
     return res.json({
@@ -174,7 +175,7 @@ export const UnBlockRestaurants=async(req,res)=>{
     }
     const unblockedRestaurant = await RestaurantModel.findByIdAndUpdate(
       id,
-      { isApproved: true, isOpen: true },
+      {isOpen: true },
       { new: true }
     );
     return res.json({

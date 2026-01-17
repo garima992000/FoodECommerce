@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../Redux/Slices/AuthSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import '../CSS/Login.css'
+import { toast } from "react-toastify";
 const Login = () => {
   const dispatch=useDispatch();
   const navigate=useNavigate();
@@ -22,7 +23,15 @@ const Login = () => {
   const handleSubmit=async(e)=>{
     e.preventDefault();
     console.log(loginFormData);
-    dispatch(loginUser(loginFormData));
+    const res=await dispatch(loginUser(loginFormData)).unwrap();
+    console.log('login res',res);
+    const{status,message}=res;
+    if(status===true){
+      toast.success(message);
+    }
+    else{
+      toast.error(message);
+    }
   }
 
   useEffect(()=>{
@@ -60,7 +69,7 @@ const Login = () => {
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <p>
-        Don’t have an account? <span>Register</span>
+        Don’t have an account? <Link to="/register"><span>Register</span></Link>
       </p>
     </div>
     </div>

@@ -1,0 +1,23 @@
+.users-container {
+  padding: 24px;
+}
+
+.users-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.status-text {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.status-text.error {
+  color: red;
+}

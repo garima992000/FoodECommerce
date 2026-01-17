@@ -1,0 +1,58 @@
+.admin-dashboard {
+  padding: 30px;
+}
+
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.stat-card h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Color Accents */
+.stat-card.users {
+  border-left: 6px solid #4f46e5;
+}
+
+.stat-card.restaurants {
+  border-left: 6px solid #22c55e;
+}
+
+.stat-card.pending {
+  border-left: 6px solid #f97316;
+}
+
+.stat-card.blocked {
+  border-left: 6px solid #ef4444;
+}

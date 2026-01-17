@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   try {
-    const { name, email, phone, password, address} = req.body;
+    const { name, email, phone, password, address,role} = req.body;
     const checkEmail = await UserModel.findOne({ email });
     if (checkEmail) {
       return res.json({ message: "User Already Exists!!", status: false });
@@ -23,6 +23,7 @@ export const register = async (req, res) => {
       phone,
       password,
       address,
+      role
       
     });
     newUser.password = await bcrypt.hash(password, 10);
@@ -100,7 +101,7 @@ export const update=async(req,res)=>{
 
 export const getAllUsers=async(req,res)=>{
   try {
-    const allUsers=await UserModel.find({});
+    const allUsers=await UserModel.find({role:'user'});
     if(allUsers.length===0){
       return res.json({message:"No User Found!!",status:false})
     }
@@ -130,7 +131,7 @@ export const blockUser=async(req,res)=>{
       return res.json({message:'Id not found!!',status:false})
     }
     const changedUser=await UserModel.findByIdAndUpdate(id,{isActive:false},{new:true});
-    return res.json({message:'User Blocked !!',status:true,user:changedUser})
+    return res.json({message:'User Blocked !!',status:true,changedUser:changedUser})
   } catch (error) {
     return res.json({message:error.message,status:false})
   }
