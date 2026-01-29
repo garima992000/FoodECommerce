@@ -2,6 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:7000/food",
+  
 });
 
 axiosInstance.interceptors.request.use(
@@ -10,6 +11,7 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log("API CALL:", config.method, config.url);
     return config;
   },
   (error) => {

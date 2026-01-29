@@ -3,7 +3,7 @@ import "../CSS/Register.css";
 import { registerUser } from "../Redux/Slices/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const {loading,error,user}=useSelector(state=>state.auth);
@@ -123,7 +123,7 @@ const Register = () => {
           <button type="button" onClick={handleSubmit}>Register</button>
 
           <p>
-            Already have an account? <span>Login</span>
+            Already have an account? <Link to="/login"><span>Login</span></Link>
           </p>
         </form>
       </div>

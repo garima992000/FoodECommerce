@@ -51,7 +51,7 @@ export const createCheckOut = async (req, res) => {
     }
     const line_items = cart.items.map((item) => ({
       price_data: {
-        currency: "usd",
+        currency: "inr",
         product_data: {
           name: item.name,
         },
