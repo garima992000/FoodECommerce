@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import FoodCard from "../Components/FoodCard";
 import "../CSS/FoodCard.css";
-import { addFood, deleteFood, fetchOwnerMenu, updateFood } from "../Redux/Slices/MenuSlice";
+import {
+  addFood,
+  deleteFood,
+  fetchOwnerMenu,
+  updateFood,
+} from "../Redux/Slices/MenuSlice";
 import { toast } from "react-toastify";
 const initialModalData = {
   name: "",
@@ -13,7 +18,16 @@ const initialModalData = {
   isVeg: true,
   isAvailable: true,
 };
+const CATEGORY_OPTIONS = [
+  "starter",
+  "Main Course",
+  "dessert",
+  "beverage",
+  "snacks",
+];
+
 const OwnerMenu = () => {
+  const [errors, setErrors] = useState({});
   const [modal, setModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [modalData, setModalData] = useState(initialModalData);
@@ -37,31 +51,49 @@ const OwnerMenu = () => {
     setModal(true);
     setModalData(data);
   };
-  const handleDelete=async(id)=>{
-      const res=await dispatch(deleteFood(id)).unwrap();
-      await dispatch(fetchOwnerMenu(restaurantId));
-      const{status,message}=res;
-      if(status===true){
-        toast.success(message);
-      }
-      else{
-        toast.error(message);
-      }
-  }
+  const handleDelete = async (id) => {
+    const res = await dispatch(deleteFood(id)).unwrap();
+    await dispatch(fetchOwnerMenu(restaurantId));
+    const { status, message } = res;
+    if (status === true) {
+      toast.success(message);
+    } else {
+      toast.error(message);
+    }
+  };
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!modalData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+    if (!modalData.description.trim()) {
+      newErrors.description = "Description is required";
+    }
+    if (!modalData.category) {
+      newErrors.category = "Category is required";
+    }
+    if (!modalData.price || modalData.price <= 0) {
+      newErrors.price = "Price must be greater than 0";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !modalData.name ||
-      !modalData.description ||
-      modalData.price <= 0 ||
-      !modalData.category
-    ) {
-      toast.error("Please fill the entire details");
-      return;
-    }
+    // if (
+    //   !modalData.name ||
+    //   !modalData.description ||
+    //   modalData.price <= 0 ||
+    //   !modalData.category
+    // ) {
+    //   toast.error("Please fill the entire details");
+    //   return;
+    // }
+    if (!validateForm()) return;
     if (modalMode === "add") {
       const res = await dispatch(
-        addFood({ data: modalData, restaurantId })
+        addFood({ data: modalData, restaurantId }),
       ).unwrap();
       const { message, status } = res;
       if (status === true) {
@@ -73,15 +105,16 @@ const OwnerMenu = () => {
         toast.error(message);
       }
     } else {
-      const res=await dispatch(updateFood({data:modalData,foodId:modalData._id})).unwrap();
-      console.log('update res',res);
-      const{status,message}=res;
-      if(status===true){
+      const res = await dispatch(
+        updateFood({ data: modalData, foodId: modalData._id }),
+      ).unwrap();
+      console.log("update res", res);
+      const { status, message } = res;
+      if (status === true) {
         toast.success(message);
         setModalData(initialModalData);
         setModal(false);
-      }
-      else {
+      } else {
         toast.error(message);
       }
     }
@@ -128,6 +161,9 @@ const OwnerMenu = () => {
                       placeholder="Paneer Butter Masala"
                       onChange={handleChange}
                     />
+                    {errors.name && (
+                      <p className="field-error">{errors.name}</p>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -139,6 +175,9 @@ const OwnerMenu = () => {
                       value={modalData.description}
                       onChange={handleChange}
                     />
+                    {errors.description && (
+                      <p className="field-error">{errors.description}</p>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -150,17 +189,36 @@ const OwnerMenu = () => {
                       placeholder="220"
                       onChange={handleChange}
                     />
+                    {errors.price && (
+                      <p className="field-error">{errors.price}</p>
+                    )}
                   </div>
 
                   <div className="form-group">
                     <label>Category *</label>
-                    <input
+                    {/* <input
                       type="text"
                       name="category"
                       value={modalData.category}
                       placeholder="Main Course"
                       onChange={handleChange}
-                    />
+                    /> */}
+                    <select
+                      name="category"
+                      value={modalData.category}
+                      onChange={handleChange}
+                    >
+                      <option value="">Select category</option>
+
+                      {CATEGORY_OPTIONS.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.category && (
+                      <p className="field-error">{errors.category}</p>
+                    )}
                   </div>
 
                   <div className="form-row">

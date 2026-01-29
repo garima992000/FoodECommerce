@@ -361,5 +361,17 @@
   gap: 8px;
   margin-left: auto;
 }
+.field-error {
+  color: #e53935;
+  font-size: 12px;
+  margin-top: 4px;
+}
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
 
 
