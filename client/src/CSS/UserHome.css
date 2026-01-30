@@ -241,3 +241,40 @@
   cursor: pointer;
 }
 
+
+/* Search bar container spacing */
+.page-searchbar {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 16px;
+  margin: 16px 0 24px 0;
+
+  font-size: 15px;
+  color: #333;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+
+  transition: all 0.25s ease;
+}
+
+/* Placeholder style */
+.page-searchbar::placeholder {
+  color: #999;
+}
+
+/* Focus effect */
+.page-searchbar:focus {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .page-searchbar {
+    max-width: 100%;
+    font-size: 14px;
+  }
+}
+

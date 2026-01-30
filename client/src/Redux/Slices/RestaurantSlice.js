@@ -3,9 +3,10 @@ import axiosInstance from "../../Utils/axiosInstance";
 
 export const fetchRestaurants = createAsyncThunk(
   "restaurant/fetchRestaurants",
-  async (_, { rejectWithValue }) => {
+  async (searchText='', { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get("/restaurants");
+      const url=searchText?`/restaurants?search=${searchText}`:`/restaurants`;
+      const res = await axiosInstance.get(url);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);

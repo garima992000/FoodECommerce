@@ -1,19 +1,22 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login from "../Pages/Login";
+import { lazy } from "react";
 import ProtectedRoutes from "./ProtectedRoutes";
 import AppLayout from "../Layout/AppLayout";
+
+import Login from "../Pages/Login";
 import Register from "../Pages/Register";
-import UserHome from "../Pages/User/UserHome";
-import AdminDashboard from "../Pages/Admin/AdminDashboard";
-import OwnerDashboard from "../Pages/Owner/OwnerDashboard";
-import Users from "../Pages/Admin/Users";
-import Restaurants from "../Pages/Admin/Restraunts";
-import MyOrders from "../Pages/User/MyOrders";
-import Cart from "../Pages/User/Cart"
-import MyRestaurants from "../Pages/Owner/MyRestaurants";
-import OwnerOrders from "../Pages/Owner/OwnerOrders"
-import RestaurantMenu from "../Pages/RestaurantMenu";
-import OwnerMenu from "../Pages/OwnerMenu";
+const UserHome=lazy(()=>import("../Pages/User/UserHome"));
+const AdminDashboard=lazy(()=>import("../Pages/Admin/AdminDashboard"));
+const OwnerDashboard=lazy(()=>import("../Pages/Owner/OwnerDashboard"));
+const Users=lazy(()=>import("../Pages/Admin/Users"));
+const Restaurants=lazy(()=>import("../Pages/Admin/Restraunts"));
+const MyOrders=lazy(()=>import("../Pages/User/MyOrders"));
+const Cart=lazy(()=>import("../Pages/User/Cart"));
+const MyRestaurants=lazy(()=>import("../Pages/Owner/MyRestaurants"));
+const OwnerOrders=lazy(()=>import("../Pages/Owner/OwnerOrders"));
+const RestaurantMenu=lazy(()=>import("../Pages/RestaurantMenu"));
+const OwnerMenu=lazy(()=>import("../Pages/OwnerMenu"));
+
 const Routes = createBrowserRouter([
   {
     path: "/login",

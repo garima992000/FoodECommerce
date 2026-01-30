@@ -100,12 +100,26 @@ export const update=async(req,res)=>{
 }
 
 export const getAllUsers=async(req,res)=>{
+  const searchedText=req.query.search;
   try {
-    const allUsers=await UserModel.find({role:'user'});
+    if(!searchedText){
+      const allUsers=await UserModel.find({role:'user'});
     if(allUsers.length===0){
       return res.json({message:"No User Found!!",status:false})
     }
     return res.json({message:"All Users Found!!",status:true,allUsers:allUsers})
+    }
+    const normalizedSearch=searchedText.trim().toLowerCase().replace(/\s+/,'');
+    console.log(normalizedSearch);
+    const allUsers=await UserModel.find({role:'user',name:{
+      $regex:normalizedSearch.split('').join('\\s*'),
+      $options:'i'
+    }});
+    if(allUsers.length===0){
+      return res.json({message:"No User Found!!",status:false})
+    }
+    return res.json({message:"All Users Found!!",status:true,allUsers:allUsers})
+    
   } catch (error) {
     return res.json({message:error.message,status:false})
   }

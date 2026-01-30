@@ -33,17 +33,38 @@ export const createRestaurant = async (req, res) => {
 };
 
 export const getallRestaurants = async (req, res) => {
+  const searchedText = req.query.search;
   try {
-    const allRestaurants = await RestaurantModel.find({ isApproved: true });
-    if (allRestaurants.length === 0) {
-      return res.json({ message: "No Restaurants Found!!", status: false });
-    }
+    if (!req.query.search) {
+      const allRestaurants = await RestaurantModel.find({ isApproved: true });
+      if (allRestaurants.length === 0) {
+        return res.json({ message: "No Restaurants Found!!", status: false });
+      }
 
-    return res.json({
-      message: "Got all Restaurants!!",
-      status: true,
-      allRestaurants: allRestaurants,
-    });
+      return res.json({
+        message: "Got all Restaurants!!",
+        status: true,
+        allRestaurants: allRestaurants,
+      });
+    } 
+    const normalizedSearch=searchedText.trim().toLowerCase().replace(/\s+/g,'');
+      const allRestaurants = await RestaurantModel.find({
+        isApproved: true,
+        name:{
+          $regex:normalizedSearch.split("").join('\\s*'),
+          $options:'i'
+        },
+      });
+      if (allRestaurants.length === 0) {
+        return res.json({ message: "No Restaurants Found!!", status: false });
+      }
+
+      return res.json({
+        message: "Found Restaurant!!",
+        status: true,
+        allRestaurants: allRestaurants,
+      });
+    
   } catch (error) {
     return res.json({ message: error.message, status: false });
   }
@@ -59,8 +80,8 @@ export const getByIdRestaurant = async (req, res) => {
       _id: id,
       isApproved: true,
     });
-    if(!restaurant){
-      return res.json({message:"Restaurant not Found!!",status:false})
+    if (!restaurant) {
+      return res.json({ message: "Restaurant not Found!!", status: false });
     }
     return res.json({
       message: "Restaurant Found!!",
@@ -107,12 +128,15 @@ export const getallRestaurantsAdmin = async (req, res) => {
 
 export const PendingRestaurants = async (req, res) => {
   try {
-    const restaurants = await RestaurantModel.find({ isApproved: false , isOpen:true});
-    if (restaurants.length===0) {
+    const restaurants = await RestaurantModel.find({
+      isApproved: false,
+      isOpen: true,
+    });
+    if (restaurants.length === 0) {
       return res.json({
         message: "No Pending Restaurants there!!",
         status: true,
-        pendingRestaurants: restaurants
+        pendingRestaurants: restaurants,
       });
     }
     return res.json({
@@ -133,8 +157,8 @@ export const ApproveRestaurants = async (req, res) => {
     }
     const approvedRestaurant = await RestaurantModel.findByIdAndUpdate(
       id,
-      { isApproved: true ,isOpen:true},
-      { new: true }
+      { isApproved: true, isOpen: true },
+      { new: true },
     );
     return res.json({
       message: "Restaurant is Approved Now!!",
@@ -154,8 +178,8 @@ export const BlockRestaurants = async (req, res) => {
     }
     const blockedRestaurant = await RestaurantModel.findByIdAndUpdate(
       id,
-      {isOpen: false },
-      { new: true }
+      { isOpen: false },
+      { new: true },
     );
     return res.json({
       message: "Restaurant is blocked Now!!",
@@ -167,7 +191,7 @@ export const BlockRestaurants = async (req, res) => {
   }
 };
 
-export const UnBlockRestaurants=async(req,res)=>{
+export const UnBlockRestaurants = async (req, res) => {
   try {
     const id = req.params.id;
     if (!id) {
@@ -175,8 +199,8 @@ export const UnBlockRestaurants=async(req,res)=>{
     }
     const unblockedRestaurant = await RestaurantModel.findByIdAndUpdate(
       id,
-      {isOpen: true },
-      { new: true }
+      { isOpen: true },
+      { new: true },
     );
     return res.json({
       message: "Restaurant is unblocked Now!!",
@@ -186,4 +210,4 @@ export const UnBlockRestaurants=async(req,res)=>{
   } catch (error) {
     return res.json({ message: error.message, status: false });
   }
-}
+};

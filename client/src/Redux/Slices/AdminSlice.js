@@ -63,9 +63,10 @@ export const fetchUpdateUnblock = createAsyncThunk(
 
 export const fetchAllUsers = createAsyncThunk(
   "auth/fetchAllUsers",
-  async (_, { rejectWithValue }) => {
+  async (searchText, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get("/admin/users");
+      const url=searchText?`/admin/users?search=${searchText}`:`/admin/users`
+      const res = await axiosInstance.get(url);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);

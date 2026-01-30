@@ -21,3 +21,41 @@
 .status-text.error {
   color: red;
 }
+
+.users-searchbar {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 16px;
+  margin: 16px 0 24px;
+
+  font-size: 15px;
+  color: #333;
+  background-color: #fff;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  outline: none;
+  box-sizing: border-box;
+
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Placeholder style */
+.users-searchbar::placeholder {
+  color: #999;
+}
+
+/* Focus effect */
+.users-searchbar:focus {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .users-searchbar {
+    max-width: 100%;
+    font-size: 14px;
+  }
+}
