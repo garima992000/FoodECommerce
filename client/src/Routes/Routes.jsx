@@ -5,6 +5,7 @@ import AppLayout from "../Layout/AppLayout";
 
 import Login from "../Pages/Login";
 import Register from "../Pages/Register";
+import Subscription from "../Pages/Subscription";
 const UserHome=lazy(()=>import("../Pages/User/UserHome"));
 const AdminDashboard=lazy(()=>import("../Pages/Admin/AdminDashboard"));
 const OwnerDashboard=lazy(()=>import("../Pages/Owner/OwnerDashboard"));
@@ -44,6 +45,9 @@ const Routes = createBrowserRouter([
       },{
         path:"cart",
         element:<Cart/>
+      },{
+        path:"subscription",
+        element:<Subscription/>
       },
       {
         path:"admin",

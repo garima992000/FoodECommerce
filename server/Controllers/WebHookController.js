@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import CartModel from "../Schemas/CartSchema.js";
 import OrderModel from "../Schemas/OrderSchema.js";
+import UserModel from "../Schemas/UserAdminSchema.js";
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_KEY);
 console.log(process.env.ENDPOINT_SECRET);
@@ -23,7 +24,8 @@ export const stripeWebHook = async (req, res) => {
   console.log("🔥 Stripe event:", event); 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    const { userId, restaurantId, cartId } = session.metadata;
+    if(session.mode==='payment'){
+      const { userId, restaurantId, cartId } = session.metadata;
     const cart = await CartModel.findById(cartId);
     if (!cart) return;
     await OrderModel.create({
@@ -36,6 +38,18 @@ export const stripeWebHook = async (req, res) => {
       orderStatus: "PLACED",
     });
     await CartModel.findByIdAndDelete(cartId);
+    }
+
+    if(session.mode==='subscription'){
+      const{userId,plan}=session.metadata;
+
+      await UserModel.findByIdAndUpdate(userId,{
+        subscriptionPlan:plan,
+        subscriptionActive:true,
+        subscriptionStartedAt:new Date()
+      })
+    }
+    
 
     console.log("✅ Order created via webhook");
   }

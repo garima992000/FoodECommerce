@@ -45,15 +45,25 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "user",
-      enum: ["user", "admin","restaurant_owner"],
+      enum: ["user", "admin", "restaurant_owner"],
     },
-    isActive:{
-      type:Boolean,
-      default:true,
-      enum:[true,false]
-    }
+    isActive: {
+      type: Boolean,
+      default: true,
+      enum: [true, false],
+    },
+    subscriptionPlan: {
+      type: String,
+      enum: ["free", "basic", "advanced"],
+      default: "free",
+    },
+    subscriptionActive: {
+      type: Boolean,
+      default: false,
+    },
+    subscriptionStartedAt: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const UserModel = mongoose.model("user", UserSchema);

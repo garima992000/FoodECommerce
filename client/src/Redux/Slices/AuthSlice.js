@@ -29,6 +29,19 @@ export const registerUser=createAsyncThunk(
   }
 )
 
+export const me=createAsyncThunk(
+  "auth/me",
+  async(_ , {rejectWithValue})=>{
+    try {
+      const res=await axiosInstance.get('/auth/me');
+      return res.data;
+    } catch (error) {
+                  return rejectWithValue(error.response?.data?.message || error.message);
+
+    }
+  }
+)
+
 
 const initialState = {
   users:[],
@@ -80,6 +93,19 @@ const authSlice = createSlice({
       state.error=null;
     })
     builder.addCase(registerUser.rejected,(state,action)=>{
+      state.loading=false;
+      state.error=action.payload;
+    })
+    builder.addCase(me.pending,(state)=>{
+      state.loading=true;
+      state.error=null;
+    })
+    builder.addCase(me.fulfilled,(state,action)=>{
+      state.loading=false;
+      state.error=null;
+      state.user=action.payload.user;
+    })
+    builder.addCase(me.rejected,(state,action)=>{
       state.loading=false;
       state.error=action.payload;
     })

@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import CartModel from "../Schemas/CartSchema.js";
 import RestaurantModel from "../Schemas/RestaurantSchema.js";
 import MenuModel from "../Schemas/MenuSchema.js";
+import UserModel from "../Schemas/UserAdminSchema.js";
 
 const stripe = new Stripe(process.env.STRIPE_KEY);
 
@@ -49,16 +50,23 @@ export const createCheckOut = async (req, res) => {
         });
       }
     }
-    const line_items = cart.items.map((item) => ({
-      price_data: {
+    const user=await UserModel.findById(userId);
+    let discount=0;
+    if(user.subscriptionPlan==='BASIC') discount=0.1;
+    if(user.subscriptionPlan==='ADVANCED') discount=0.5;
+
+    const line_items = cart.items.map((item) => {
+      const finalPrice=item.price-item.price*discount;
+      return {price_data: {
         currency: "inr",
         product_data: {
           name: item.name,
         },
-        unit_amount: Math.round(item.price * 100),
+        unit_amount: Math.round(finalPrice * 100),
       },
       quantity: item.quantity,
-    }));
+    }
+    });
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items,
@@ -76,4 +84,44 @@ export const createCheckOut = async (req, res) => {
     return res.json({ message: error.message, status: false });
   }
 };
-//price integrity
+
+export const createSubscriptionCheckout=async(req,res)=>{
+  try {
+   
+    const userId=req.userId;
+    const {plan}=req.body;
+    
+    if(!['basic','advanced'].includes(plan)){
+      return res.json({message:'Plan not Valid'})
+    }
+
+    const user=await UserModel.findById(userId);
+    if(!user){
+      return res.json({message:'User not found!!',status:false})
+    }
+
+    const PLAN_PRICE={
+      basic:process.env.STRIPE_BASIC_PRICE_ID,
+      advanced:process.env.STRIPE_ADVANCED_PRICE_ID
+    }
+
+    const session=await stripe.checkout.sessions.create({
+      mode:'subscription',
+      payment_method_types:['card'],
+      customer_email:user.email,
+      line_items:[{
+        price:PLAN_PRICE[plan],
+        quantity:1
+      }],
+      success_url:'http://localhost:5173/',
+      cancel_url:'http://localhost:5173/subscription',
+      metadata:{
+        userId:userId.toString(),
+        plan
+      }
+    })
+    return res.json({status:true,url:session.url})
+  } catch (error) {
+    return res.json({message:error.message,status:false})
+  }
+}

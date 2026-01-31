@@ -23,7 +23,8 @@ export const register = async (req, res) => {
       phone,
       password,
       address,
-      role
+      role:'user',
+      subscriptionPlan:"free"
       
     });
     newUser.password = await bcrypt.hash(password, 10);
@@ -70,7 +71,10 @@ export const login = async (req, res) => {
       status: true,
       jwtToken,
       name: checkEmail.name,
-      role:checkEmail.role
+      role:checkEmail.role,
+      subscriptionPlan: checkEmail.subscriptionPlan,
+      subscriptionActive:checkEmail.subscriptionActive,
+      subscriptionStartedAt:checkEmail.subscriptionStartedAt
     });
   } catch (error) {
     return res.json({ message: error.message });

@@ -45,6 +45,10 @@ const RestaurantSchema=new mongoose.Schema({
     ownerId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user"
+    },
+    isPremium:{
+      type:Boolean,
+      default:false
     }
     },{timestamps:true})
 

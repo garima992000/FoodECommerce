@@ -9,7 +9,7 @@ routes.post('/restaurants',Auth,isRestaurantOwner,createRestaurant);
 //for restaurant owner
 routes.get('/restaurants/my',Auth,isRestaurantOwner,getOwnerRestaurants)
 //for users
-routes.get('/restaurants',getallRestaurants)
+routes.get('/restaurants',Auth,getallRestaurants)
 routes.get('/restaurants/:id',getByIdRestaurant);
 //for admin
 routes.get('/admin/restaurants',Auth,isAdmin,getallRestaurantsAdmin)

@@ -1,4 +1,5 @@
 import RestaurantModel from "../Schemas/RestaurantSchema.js";
+import UserModel from "../Schemas/UserAdminSchema.js";
 
 export const createRestaurant = async (req, res) => {
   try {
@@ -33,10 +34,15 @@ export const createRestaurant = async (req, res) => {
 };
 
 export const getallRestaurants = async (req, res) => {
-  const searchedText = req.query.search;
+  
   try {
-    if (!req.query.search) {
-      const allRestaurants = await RestaurantModel.find({ isApproved: true });
+    const userId=req.userId;
+    const searchedText = req.query.search;
+    const user=await UserModel.findById(userId);
+    console.log(user);
+    if (!searchedText) {
+      if(user.subscriptionPlan==='basic'||user.subscriptionPlan==='free'){
+const allRestaurants = await RestaurantModel.find({ isApproved: true ,isPremium:false});
       if (allRestaurants.length === 0) {
         return res.json({ message: "No Restaurants Found!!", status: false });
       }
@@ -46,14 +52,32 @@ export const getallRestaurants = async (req, res) => {
         status: true,
         allRestaurants: allRestaurants,
       });
-    } 
+      
+      }
+      if(user.subscriptionPlan==='advanced'){
+const allRestaurants = await RestaurantModel.find({ isApproved: true ,isPremium:true});
+      if (allRestaurants.length === 0) {
+        return res.json({ message: "No Restaurants Found!!", status: false });
+      }
+
+      return res.json({
+        message: "Got all Restaurants!!",
+        status: true,
+        allRestaurants: allRestaurants,
+      });
+      
+      } 
+    }
     const normalizedSearch=searchedText.trim().toLowerCase().replace(/\s+/g,'');
-      const allRestaurants = await RestaurantModel.find({
+    if(user.subscriptionPlan==='basic'||user.subscriptionPlan==='free'){
+const allRestaurants = await RestaurantModel.find({
         isApproved: true,
         name:{
           $regex:normalizedSearch.split("").join('\\s*'),
           $options:'i'
         },
+        isPremium:false,
+        
       });
       if (allRestaurants.length === 0) {
         return res.json({ message: "No Restaurants Found!!", status: false });
@@ -64,8 +88,30 @@ export const getallRestaurants = async (req, res) => {
         status: true,
         allRestaurants: allRestaurants,
       });
+    }
+    if(user.subscriptionPlan==='advanced'){
+const allRestaurants = await RestaurantModel.find({
+        isApproved: true,
+        name:{
+          $regex:normalizedSearch.split("").join('\\s*'),
+          $options:'i'
+        },
+        isPremium:true,
+        
+      });
+      if (allRestaurants.length === 0) {
+        return res.json({ message: "No Restaurants Found!!", status: false });
+      }
+
+      return res.json({
+        message: "Found Restaurant!!",
+        status: true,
+        allRestaurants: allRestaurants,
+      });
+    }
+      
     
-  } catch (error) {
+  }catch(error) {
     return res.json({ message: error.message, status: false });
   }
 };

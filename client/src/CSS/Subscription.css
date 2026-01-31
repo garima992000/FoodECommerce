@@ -1,0 +1,64 @@
+.subscription-page {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px;
+}
+
+.current-plan {
+  margin-bottom: 30px;
+  font-size: 18px;
+}
+
+.plans-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.plan-card {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  background: #fff;
+}
+
+.plan-card.featured {
+  border: 2px solid #ff6b00;
+}
+
+.plan-card h3 {
+  font-size: 22px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.plan-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.plan-card li {
+  margin: 8px 0;
+}
+
+.plan-card button {
+  margin-top: 15px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #ff6b00;
+  color: #fff;
+  font-size: 16px;
+}
+
+.plan-card button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
