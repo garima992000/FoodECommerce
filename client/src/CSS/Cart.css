@@ -203,3 +203,56 @@
   background-color: #c62832;
   transform: translateY(-1px);
 }
+
+/* Price Summary Box */
+.price-summary {
+  margin-top: 24px;
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+/* Title */
+.summary-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: #222;
+}
+
+/* Price rows */
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 15px;
+  color: #444;
+}
+
+/* Discount styling */
+.price-row.discount {
+  color: #1a9c5e;
+  font-weight: 500;
+}
+
+/* Divider line */
+.price-divider {
+  height: 1px;
+  background: #eee;
+  margin: 10px 0;
+}
+
+/* Total amount highlight */
+.price-row.total {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+}
+
+/* Optional: emphasize amount */
+.price-row.total span:last-child {
+  color: #e23744; /* Zomato-like red */
+}
+

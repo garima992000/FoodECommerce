@@ -23,7 +23,7 @@ const OwnerCard = ({ order }) => {
     <div className="order-card owner-order-card">
       <div className="order-header">
         <div className="order-header-left">
-          <h3 className="restaurant-name">Customer: {order.userId.name}</h3>
+          <h3 className="restaurant-name">Customer: {order.userId?.name}</h3>
 
           <p className="order-date">Order ID: #{order._id.slice(-6)}</p>
 

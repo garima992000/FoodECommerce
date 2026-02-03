@@ -20,7 +20,7 @@ const OrderItemSchema = new mongoose.Schema(
       min: 1,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const OrderSchema = new mongoose.Schema(
@@ -66,8 +66,20 @@ const OrderSchema = new mongoose.Schema(
       default: "PENDING",
       enum: ["PAID", "PENDING", "FAILED"],
     },
+    originalAmount: {
+      type: Number,
+      
+    },
+    discountAmount: {
+      type: Number,
+      
+    },
+    subscriptionPlan: {
+      type: String,
+      enum: ["free", "basic", "advanced"],
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const OrderModel = mongoose.model("order", OrderSchema);

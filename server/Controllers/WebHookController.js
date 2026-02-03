@@ -21,18 +21,36 @@ export const stripeWebHook = async (req, res) => {
     console.log("Webhook signature verification failed", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
-  console.log("🔥 Stripe event:", event); 
+  // console.log("🔥 Stripe event:", event); 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     if(session.mode==='payment'){
       const { userId, restaurantId, cartId } = session.metadata;
     const cart = await CartModel.findById(cartId);
     if (!cart) return;
+    const user = await UserModel.findById(userId);
+    let discount=0;
+    if (user.subscriptionPlan === "basic") discount = 0.1;
+    if (user.subscriptionPlan === "advanced") discount = 0.5;
+
+    const originalAmount = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    
+    const discountAmount = Math.round(originalAmount * discount);
+    const totalAmount = originalAmount - discountAmount;
+
     await OrderModel.create({
       userId,
       restaurantId,
       items: cart.items,
-      totalAmount: cart.totalAmount,
+
+      originalAmount,
+      discountAmount,
+      totalAmount,
+
+      subscriptionPlan: user.subscriptionPlan,
       paymentMethod: "CARD",
       paymentStatus: "PAID",
       orderStatus: "PLACED",
@@ -51,7 +69,6 @@ export const stripeWebHook = async (req, res) => {
     }
     
 
-    console.log("✅ Order created via webhook");
   }
   res.json({ received: true });
 };

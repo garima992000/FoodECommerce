@@ -52,11 +52,14 @@ export const createCheckOut = async (req, res) => {
     }
     const user=await UserModel.findById(userId);
     let discount=0;
-    if(user.subscriptionPlan==='BASIC') discount=0.1;
-    if(user.subscriptionPlan==='ADVANCED') discount=0.5;
+    if(user.subscriptionPlan==='basic') discount=0.1;
+    if(user.subscriptionPlan==='advanced') discount=0.5;
 
     const line_items = cart.items.map((item) => {
       const finalPrice=item.price-item.price*discount;
+      console.log('Item Price',item.price);
+      console.log('Item DIscount',item.price*discount)
+      console.log('FInal price',finalPrice);
       return {price_data: {
         currency: "inr",
         product_data: {

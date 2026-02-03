@@ -11,7 +11,7 @@ export const addToCart = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 export const getCart = createAsyncThunk(
   "cart/getCart",
@@ -22,7 +22,7 @@ export const getCart = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 export const deleteCart = createAsyncThunk(
   "cart/deleteCart",
@@ -35,7 +35,7 @@ export const deleteCart = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 
 export const updateCart = createAsyncThunk(
@@ -49,7 +49,7 @@ export const updateCart = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 
 export const removeCart = createAsyncThunk(
@@ -63,7 +63,7 @@ export const removeCart = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
-  }
+  },
 );
 const CartSlice = createSlice({
   name: "cart",
@@ -71,6 +71,8 @@ const CartSlice = createSlice({
     items: [],
     restaurantId: null,
     totalAmount: 0,
+    discountPrice: 0,
+    originalAmount: 0,
     loading: false,
     error: null,
   },
@@ -84,6 +86,8 @@ const CartSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.totalAmount = action.payload.cart.totalAmount;
+      state.originalAmount = action.payload.cart.originalAmount;
+      state.discountPrice = action.payload.cart.discountPrice;
       state.restaurantId = action.payload.cart.restaurantId;
     });
     builder.addCase(addToCart.rejected, (state, action) => {
@@ -99,6 +103,8 @@ const CartSlice = createSlice({
       state.error = null;
       state.items = action.payload.items;
       state.totalAmount = action.payload.totalAmount;
+      state.originalAmount = action.payload.originalAmount;
+      state.discountPrice = action.payload.discountPrice;
       state.restaurantId = action.payload.restaurantId;
     });
     builder.addCase(getCart.rejected, (state, action) => {
@@ -118,6 +124,8 @@ const CartSlice = createSlice({
       state.error = null;
       state.items = action.payload.items;
       state.totalAmount = action.payload.totalAmount;
+      state.originalAmount = action.payload.originalAmount;
+      state.discountPrice = action.payload.discountPrice;
       state.restaurantId = action.payload.restaurantId;
     });
     builder.addCase(deleteCart.pending, (state) => {
@@ -131,9 +139,11 @@ const CartSlice = createSlice({
     builder.addCase(deleteCart.fulfilled, (state, action) => {
       state.loading = false;
       state.error = null;
-      state.totalAmount = action.payload.totalAmount;
-      state.restaurantId = action.payload.restaurantId;
-      state.items = action.payload.items;
+      state.items = action.payload.cart.items;
+      state.totalAmount = action.payload.cart.totalAmount;
+      state.originalAmount = action.payload.cart.originalAmount;
+      state.discountPrice = action.payload.cart.discountPrice;
+      state.restaurantId = action.payload.cart.restaurantId;
     });
     builder.addCase(removeCart.pending, (state) => {
       state.loading = true;
@@ -148,11 +158,15 @@ const CartSlice = createSlice({
       state.error = null;
       state.items = action.payload.items;
       state.totalAmount = action.payload.totalAmount;
+      state.originalAmount = action.payload.originalAmount;
+      state.discountPrice = action.payload.discountPrice;
       state.restaurantId = action.payload.restaurantId;
     });
     builder.addCase(placeOrder.fulfilled, (state) => {
       state.items = [];
       state.totalAmount = 0;
+      state.originalAmount = 0;
+      state.discountPrice = 0;
       state.restaurantId = null;
     });
   },

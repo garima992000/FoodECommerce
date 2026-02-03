@@ -34,50 +34,58 @@ export const createRestaurant = async (req, res) => {
 };
 
 export const getallRestaurants = async (req, res) => {
-  
   try {
-    const userId=req.userId;
+    const userId = req.userId;
     const searchedText = req.query.search;
-    const user=await UserModel.findById(userId);
+    const user = await UserModel.findById(userId);
     console.log(user);
     if (!searchedText) {
-      if(user.subscriptionPlan==='basic'||user.subscriptionPlan==='free'){
-const allRestaurants = await RestaurantModel.find({ isApproved: true ,isPremium:false});
-      if (allRestaurants.length === 0) {
-        return res.json({ message: "No Restaurants Found!!", status: false });
-      }
+      if (
+        user.subscriptionPlan === "basic" ||
+        user.subscriptionPlan === "free"
+      ) {
+        const allRestaurants = await RestaurantModel.find({
+          isApproved: true,
+          isPremium: false,
+        });
+        if (allRestaurants.length === 0) {
+          return res.json({ message: "No Restaurants Found!!", status: false });
+        }
 
-      return res.json({
-        message: "Got all Restaurants!!",
-        status: true,
-        allRestaurants: allRestaurants,
-      });
-      
+        return res.json({
+          message: "Got all Restaurants!!",
+          status: true,
+          allRestaurants: allRestaurants,
+        });
       }
-      if(user.subscriptionPlan==='advanced'){
-const allRestaurants = await RestaurantModel.find({ isApproved: true ,isPremium:true});
-      if (allRestaurants.length === 0) {
-        return res.json({ message: "No Restaurants Found!!", status: false });
-      }
+      if (user.subscriptionPlan === "advanced") {
+        const allRestaurants = await RestaurantModel.find({
+          isApproved: true,
+          isPremium: true,
+        });
+        if (allRestaurants.length === 0) {
+          return res.json({ message: "No Restaurants Found!!", status: false });
+        }
 
-      return res.json({
-        message: "Got all Restaurants!!",
-        status: true,
-        allRestaurants: allRestaurants,
-      });
-      
-      } 
+        return res.json({
+          message: "Got all Restaurants!!",
+          status: true,
+          allRestaurants: allRestaurants,
+        });
+      }
     }
-    const normalizedSearch=searchedText.trim().toLowerCase().replace(/\s+/g,'');
-    if(user.subscriptionPlan==='basic'||user.subscriptionPlan==='free'){
-const allRestaurants = await RestaurantModel.find({
+    const normalizedSearch = searchedText
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "");
+    if (user.subscriptionPlan === "basic" || user.subscriptionPlan === "free") {
+      const allRestaurants = await RestaurantModel.find({
         isApproved: true,
-        name:{
-          $regex:normalizedSearch.split("").join('\\s*'),
-          $options:'i'
+        name: {
+          $regex: normalizedSearch.split("").join("\\s*"),
+          $options: "i",
         },
-        isPremium:false,
-        
+        isPremium: false,
       });
       if (allRestaurants.length === 0) {
         return res.json({ message: "No Restaurants Found!!", status: false });
@@ -89,15 +97,14 @@ const allRestaurants = await RestaurantModel.find({
         allRestaurants: allRestaurants,
       });
     }
-    if(user.subscriptionPlan==='advanced'){
-const allRestaurants = await RestaurantModel.find({
+    if (user.subscriptionPlan === "advanced") {
+      const allRestaurants = await RestaurantModel.find({
         isApproved: true,
-        name:{
-          $regex:normalizedSearch.split("").join('\\s*'),
-          $options:'i'
+        name: {
+          $regex: normalizedSearch.split("").join("\\s*"),
+          $options: "i",
         },
-        isPremium:true,
-        
+        isPremium: true,
       });
       if (allRestaurants.length === 0) {
         return res.json({ message: "No Restaurants Found!!", status: false });
@@ -109,9 +116,7 @@ const allRestaurants = await RestaurantModel.find({
         allRestaurants: allRestaurants,
       });
     }
-      
-    
-  }catch(error) {
+  } catch (error) {
     return res.json({ message: error.message, status: false });
   }
 };

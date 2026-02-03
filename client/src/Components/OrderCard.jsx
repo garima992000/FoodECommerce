@@ -1,6 +1,7 @@
 import React from "react";
 import "../CSS/OrderCard.css";
-const OrderCard = ({ order }) => {
+const OrderCard = ({ order,user }) => {
+  
   return (
     <div className="order-card">
       <div className="order-header">
@@ -22,9 +23,11 @@ const OrderCard = ({ order }) => {
 
       <div className="order-items">
         {order.items.map((item) => (
+          
           <div className="order-item" key={item.foodId}>
+            
             <span>
-              {item.name} × {item.quantity}
+              {item.name} × {item.quantity} 
             </span>
             <span>₹{item.price * item.quantity}</span>
           </div>

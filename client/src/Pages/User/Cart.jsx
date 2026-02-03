@@ -18,6 +18,8 @@ const Cart = () => {
   const {
     items = [],
     totalAmount,
+    originalAmount,
+    discountPrice,
     loading,
     error,
   } = useSelector((state) => state.cart);
@@ -111,7 +113,7 @@ const Cart = () => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div>  
             <div className="clear-cart-wrapper">
               <button
                 className="clear-cart-btn"
@@ -122,10 +124,27 @@ const Cart = () => {
                 Clear Cart
               </button>
             </div>
-            <div className="cart-total">
-              <span>Total</span>
-              <span>₹{totalAmount}</span>
-            </div>
+            <div className="price-summary">
+  <h3 className="summary-title">Price Details</h3>
+
+  <div className="price-row">
+    <span>Original Amount</span>
+    <span>₹{originalAmount}</span>
+  </div>
+
+  <div className="price-row discount">
+    <span>Discount</span>
+    <span>- ₹{discountPrice}</span>
+  </div>
+
+  <div className="price-divider"></div>
+
+  <div className="price-row total">
+    <span>Total Amount</span>
+    <span>₹{totalAmount}</span>
+  </div>
+</div>
+
             <div className="place-order-wrapper">
               <button className="place-order-btn" onClick={()=>{handlePlace()}}>Place Order</button>
             </div>

@@ -41,15 +41,39 @@ export const placeOrder = async (req, res) => {
         });
       }
     }
+
+    const user = await UserModel.findById(userId);
+    let discount = 0;
+    if (user.subscriptionPlan === "basic") discount = 0.1;
+    if (user.subscriptionPlan === "advanced") discount = 0.5;
+
+    const originalAmount = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
+
+    const discountAmount = originalAmount * discount;
+    const totalAmount = originalAmount - discountAmount;
+
     const order = new OrderModel({
       userId,
       restaurantId: cart.restaurantId,
       items: cart.items,
-      totalAmount: cart.totalAmount,
+      totalAmount,
+      originalAmount,
+      discountAmount,
+      subscriptionPlan: user.subscriptionPlan,
       orderStatus: "PLACED",
       paymentMethod: "COD",
       paymentStatus: "PENDING",
     });
+    console.log(
+  "FINAL VALUES 👉",
+  typeof originalAmount,
+  typeof discountAmount,
+  originalAmount,
+  discountAmount
+);
     await order.save();
 
     await CartModel.findByIdAndDelete(cart._id);
@@ -64,38 +88,56 @@ export const placeOrder = async (req, res) => {
   }
 };
 
-export const getMyOrders=async(req,res)=>{
+export const getMyOrders = async (req, res) => {
   try {
-    const userId=req.userId;
-    const myOrders=await OrderModel.find({userId}).populate('restaurantId','name address.city').sort({createdAt:-1});
-    return res.json({message:'Orders fetched Succesfully!!',status:true,orders:myOrders})
+    const userId = req.userId;
+    const myOrders = await OrderModel.find({ userId })
+      .populate("restaurantId", "name address.city")
+      .sort({ createdAt: -1 });
+    return res.json({
+      message: "Orders fetched Succesfully!!",
+      status: true,
+      orders: myOrders,
+    });
   } catch (error) {
-    return res.json({message:error.message,status:false})
+    return res.json({ message: error.message, status: false });
   }
-}
+};
 
-export const getRestaurantOrders=async(req,res)=>{
+export const getRestaurantOrders = async (req, res) => {
   try {
-    const ownerId=req.userId;
-    const restaurants=await RestaurantModel.find({ownerId});
-    if(restaurants.length===0){
-      return res.json({message:'No Restaurant !!',status:true,orders:[]})
+    const ownerId = req.userId;
+    const restaurants = await RestaurantModel.find({ ownerId });
+    if (restaurants.length === 0) {
+      return res.json({
+        message: "No Restaurant !!",
+        status: true,
+        orders: [],
+      });
     }
-    const resturantIds=restaurants.map(restaurant=>restaurant._id);
-    const restaurantOrders=await OrderModel.find({restaurantId:{$in:resturantIds}}).populate('userId','name').sort({createdAt:-1});
-    return res.json({message:'Orders fetched Successfully!!',status:true,orders:restaurantOrders})
+    const resturantIds = restaurants.map((restaurant) => restaurant._id);
+    const restaurantOrders = await OrderModel.find({
+      restaurantId: { $in: resturantIds },
+    })
+      .populate("userId", "name")
+      .sort({ createdAt: -1 });
+    return res.json({
+      message: "Orders fetched Successfully!!",
+      status: true,
+      orders: restaurantOrders,
+    });
   } catch (error) {
-    return res.json({message:error.message,status:false})
+    return res.json({ message: error.message, status: false });
   }
-}
+};
 
-export const updateOrder=async(req,res)=>{
+export const updateOrder = async (req, res) => {
   try {
-    const ownerId=req.userId;
-    const orderId=req.params.orderId;
-    const {newStatus}=req.body;
-    if(!newStatus){
-      return res.json({message:'Status is required!!',status:false})
+    const ownerId = req.userId;
+    const orderId = req.params.orderId;
+    const { newStatus } = req.body;
+    if (!newStatus) {
+      return res.json({ message: "Status is required!!", status: false });
     }
     const allowedStatuses = [
       "PLACED",
@@ -105,30 +147,36 @@ export const updateOrder=async(req,res)=>{
       "DELIVERED",
       "CANCELLED",
     ];
-    if(!allowedStatuses.includes(newStatus)){
-      return res.json({message:'Status not Allowed!!',status:false})
+    if (!allowedStatuses.includes(newStatus)) {
+      return res.json({ message: "Status not Allowed!!", status: false });
     }
-    const order=await OrderModel.findById(orderId);
-    if(!order){
-      return res.json({message:"Order not Found!!",status:false})
+    const order = await OrderModel.findById(orderId);
+    if (!order) {
+      return res.json({ message: "Order not Found!!", status: false });
     }
-    const restaurant=await RestaurantModel.findById(order.restaurantId);
-    if(!restaurant){
-      return res.json({message:'Restaurant not Found!!',status:false})
+    const restaurant = await RestaurantModel.findById(order.restaurantId);
+    if (!restaurant) {
+      return res.json({ message: "Restaurant not Found!!", status: false });
     }
-    if(restaurant.ownerId.toString()!==ownerId){
-      return res.json({message:"Access denied!!",status:false})
+    if (restaurant.ownerId.toString() !== ownerId) {
+      return res.json({ message: "Access denied!!", status: false });
     }
-    if(order.orderStatus==="CANCELLED"||order.orderStatus==="DELIVERED"){
-      return res.json({message:'Order is already Completed.Status cannot be updated',status:false})
+    if (
+      order.orderStatus === "CANCELLED" ||
+      order.orderStatus === "DELIVERED"
+    ) {
+      return res.json({
+        message: "Order is already Completed.Status cannot be updated",
+        status: false,
+      });
     }
-    if(order.orderStatus===newStatus){
+    if (order.orderStatus === newStatus) {
       return res.json({
         message: "Order is already in this status",
         status: false,
       });
     }
-    order.orderStatus=newStatus;
+    order.orderStatus = newStatus;
     await order.save();
 
     return res.json({
@@ -137,6 +185,6 @@ export const updateOrder=async(req,res)=>{
       order,
     });
   } catch (error) {
-    return res.json({message:error.message,status:false})
+    return res.json({ message: error.message, status: false });
   }
-}
+};

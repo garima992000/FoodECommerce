@@ -1,11 +1,12 @@
 import CartModel from "../Schemas/CartSchema.js";
 import MenuModel from "../Schemas/MenuSchema.js";
 import RestaurantModel from "../Schemas/RestaurantSchema.js";
+import UserModel from "../Schemas/UserAdminSchema.js";
 
 export const addToCart = async (req, res) => {
   try {
     const userId = req.userId;
-    console.log(userId)
+    console.log(userId);
     const { foodId, quantity } = req.body;
 
     const foodItem = await MenuModel.findById(foodId);
@@ -48,7 +49,7 @@ export const addToCart = async (req, res) => {
     }
 
     const itemIndex = cart.items.findIndex(
-      (item) => item.foodId.toString() === foodItem._id.toString()
+      (item) => item.foodId.toString() === foodItem._id.toString(),
     );
 
     const itemQuantity = quantity && quantity > 0 ? quantity : 1;
@@ -64,13 +65,24 @@ export const addToCart = async (req, res) => {
       });
     }
 
-    cart.totalAmount = cart.items.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
+    // cart.totalAmount = cart.items.reduce(
+    //   (total, item) => total + item.price * item.quantity,
+    //   0
+    // );
+    const user = await UserModel.findById(userId);
+    let discount = 0;
+    if (user.subscriptionPlan === "basic") discount = 0.1;
+    if (user.subscriptionPlan === "advanced") discount = 0.5;
+
+    cart.originalAmount = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
     );
 
+    cart.discountPrice = cart.originalAmount * discount;
+    cart.totalAmount = cart.originalAmount - cart.discountPrice;
     await cart.save();
-
+    
     return res.json({
       message: "Item added to cart successfully",
       status: true,
@@ -81,18 +93,28 @@ export const addToCart = async (req, res) => {
   }
 };
 
-export const getCart=async(req,res)=>{
-    try {
-        const userId=req.userId;
-        const cart=await CartModel.findOne({userId});
-        if(!cart){
-            return res.json({message:'User has not added anything yet!!',status:false})
-        }
-        return res.json({message:'Success!!',restaurantId:cart.restaurantId,items:cart.items,totalAmount:cart.totalAmount})
-    } catch (error) {
-        return res.json({message:error.message,status:false})
+export const getCart = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const cart = await CartModel.findOne({ userId });
+    if (!cart) {
+      return res.json({
+        message: "User has not added anything yet!!",
+        status: false,
+      });
     }
-}
+    return res.json({
+      message: "Success!!",
+      restaurantId: cart.restaurantId,
+      items: cart.items,
+      totalAmount: cart.totalAmount,
+      discountPrice: cart.discountPrice,
+      originalAmount: cart.originalAmount,
+    });
+  } catch (error) {
+    return res.json({ message: error.message, status: false });
+  }
+};
 
 export const updateCart = async (req, res) => {
   try {
@@ -106,7 +128,7 @@ export const updateCart = async (req, res) => {
     }
 
     const itemIndex = cart.items.findIndex(
-      (item) => item.foodId.toString() === foodId
+      (item) => item.foodId.toString() === foodId,
     );
 
     if (itemIndex === -1) {
@@ -116,8 +138,7 @@ export const updateCart = async (req, res) => {
       });
     }
 
-    const newQuantity =
-      cart.items[itemIndex].quantity + quantity;
+    const newQuantity = cart.items[itemIndex].quantity + quantity;
 
     if (newQuantity <= 0) {
       cart.items.splice(itemIndex, 1);
@@ -125,17 +146,26 @@ export const updateCart = async (req, res) => {
       cart.items[itemIndex].quantity = newQuantity;
     }
 
-    cart.totalAmount = cart.items.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
+    const user = await UserModel.findById(userId);
+    let discount = 0;
+    if (user.subscriptionPlan === "basic") discount = 0.1;
+    if (user.subscriptionPlan === "advanced") discount = 0.5;
+
+    cart.originalAmount = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
     );
 
+    cart.discountPrice = cart.originalAmount * discount;
+    cart.totalAmount = cart.originalAmount - cart.discountPrice;
     await cart.save();
 
     return res.json({
       message: "Cart updated successfully",
       status: true,
       items: cart.items,
+      originalAmount: cart.originalAmount,
+      discountPrice: cart.discountPrice,
       totalAmount: cart.totalAmount,
       restaurantId: cart.restaurantId,
     });
@@ -144,38 +174,61 @@ export const updateCart = async (req, res) => {
   }
 };
 
-
-export const deleteItem=async(req,res)=>{
-    try {
-       const userId=req.userId;
-       const foodId=req.params.foodId;
-       const cart=await CartModel.findOne({userId});
-       if(!cart){
-       return res.json({message:'cart does not exists for this user!!',status:false}) ;
-       }
-       const itemIndex=cart.items.findIndex(item=>item.foodId.toString()===foodId);
-       if(itemIndex===-1){
-        return res.json({message:"Food Item is currently not present in the cart!!",status:false})
-       }
-       cart.items=cart.items.filter(item=>item.foodId.toString()!==foodId);
-       cart.totalAmount=cart.items.reduce((total,item)=>total+item.price*item.quantity,0);
-       await cart.save();
-       return res.json({message:'Food Item removed from cart!!',status:true,cart:cart});
-    } catch (error) {
-        return res.json({message:error.message,status:false})
+export const deleteItem = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const foodId = req.params.foodId;
+    const cart = await CartModel.findOne({ userId });
+    if (!cart) {
+      return res.json({
+        message: "cart does not exists for this user!!",
+        status: false,
+      });
     }
-}
-
-export const RemoveCart=async(req,res)=>{
-    try {
-      const userId=req.userId;
-      const cart=await CartModel.findOne({userId});
-      if(!cart){
-        return res.json({message:'Cart is already not there'})
-      }
-      await CartModel.findByIdAndDelete(cart._id);
-      return res.json({message:'Cart removed!!',status:true})  
-    } catch (error) {
-        return res.json({message:error.message,status:false})
+    const itemIndex = cart.items.findIndex(
+      (item) => item.foodId.toString() === foodId,
+    );
+    if (itemIndex === -1) {
+      return res.json({
+        message: "Food Item is currently not present in the cart!!",
+        status: false,
+      });
     }
-}
+    cart.items = cart.items.filter((item) => item.foodId.toString() !== foodId);
+    const user = await UserModel.findById(userId);
+    let discount = 0;
+    if (user.subscriptionPlan === "basic") discount = 0.1;
+    if (user.subscriptionPlan === "advanced") discount = 0.5;
+
+    cart.originalAmount = cart.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
+
+    cart.discountPrice = cart.originalAmount * discount;
+    cart.totalAmount = cart.originalAmount - cart.discountPrice;
+    await cart.save();
+    
+    return res.json({
+      message: "Food Item removed from cart!!",
+      status: true,
+      cart: cart,
+    });
+  } catch (error) {
+    return res.json({ message: error.message, status: false });
+  }
+};
+
+export const RemoveCart = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const cart = await CartModel.findOne({ userId });
+    if (!cart) {
+      return res.json({ message: "Cart is already not there" });
+    }
+    await CartModel.findByIdAndDelete(cart._id);
+    return res.json({ message: "Cart removed!!", status: true });
+  } catch (error) {
+    return res.json({ message: error.message, status: false });
+  }
+};
